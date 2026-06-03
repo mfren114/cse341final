@@ -8,8 +8,8 @@ router.get('/', (req, res) => {
     res.send('Final Project');
 });
 
-router.use('/players', require('./authors'));
-router.use('/teams', require('./books'));
+router.use('/authors', require('./authors'));
+router.use('/books', require('./books'));
 
 
 module.exports = router;

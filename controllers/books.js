@@ -1,11 +1,15 @@
-const Book = require("../models/Book");
+const mongodb = require('../data/database');
+const ObjectId = require('mongodb').ObjectId;
+
 
 // GET ALL
 const getAllBooks = async (req, res) => {
     //#swagger.tags=['books']
     try {
-        const books = await Book.find();
-        res.status(200).json(books);
+        const result = await mongodb.getDatabase().db().collection('books').find().toArray();
+    
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(result);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -15,13 +19,18 @@ const getAllBooks = async (req, res) => {
 const getBookById = async (req, res) => {
     //#swagger.tags=['books']
     try {
-        const book = await Book.findById(req.params.id);
+        const userId = new ObjectId(req.params.id);
+        const result = await mongodb.getDatabase().db().collection('books').find({_id: userId}).toArray();
+        
+        res.setHeader('Content-Type', 'application/json');
 
-        if (!book) {
-            return res.status(404).json({ message: "Book not found" });
+        if (!result) {
+            return res.status(404).json({
+                message: "Author not found"
+            });
         }
 
-        res.status(200).json(book);
+        res.status(200).json(result[0]);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -30,37 +39,46 @@ const getBookById = async (req, res) => {
 // POST
 const createBook = async (req, res) => {
     //#swagger.tags=['books']
+    const books = {
+        title: req.body.title,
+        isbn: req.body.isbn,
+        publicationYear: req.body,publicationYear,
+        authorId: req.body.authorId
+    };
     try {
-        const book = new Book(req.body);
-
-        const savedBook = await book.save();
-
-        res.status(201).json(savedBook);
+        const response = await mongodb.getDatabase().db().collection('books').insertOne(books);
+        if (response.acknowledged) {
+            res.status(204).send();
+        } else {
+            res.status(500).json(response.error || 'Some error occured while creating the Author');
+        }
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(400).json({
+            message: err.message
+        });
     }
 };
 
 // PUT
 const updateBook = async (req, res) => {
     //#swagger.tags=['books']
+    const userId = new ObjectId(req.params.id);
+    const books = {
+        title: req.body.title,
+        isbn: req.body.isbn,
+        publicationYear: req.body,publicationYear,
+        authorId: req.body.authorId
+    };
     try {
-        const updatedBook = await Book.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
-            }
-        );
-
-        if (!updatedBook) {
-            return res.status(404).json({ message: "Book not found" });
+         const response = await mongodb.getDatabase().db().collection('books').replaceOne({_id: userId}, books);
+        if (response.modifiedCount > 0) {
+            res.status(204).send();
+        } else {
+            res.status(500).json(response.error || 'Some error occured while updating the author')
         }
-
-        res.status(200).json(updatedBook);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json(error.message || 'Some error occurred while updating the author');
     }
 };
 
@@ -68,17 +86,16 @@ const updateBook = async (req, res) => {
 const deleteBook = async (req, res) => {
     //#swagger.tags=['books']
     try {
-        const deletedBook = await Book.findByIdAndDelete(req.params.id);
-
-        if (!deletedBook) {
-            return res.status(404).json({ message: "Book not found" });
+        const userId = new ObjectId(req.params.id);
+        const response = await mongodb.getDatabase().db().collection('books').deleteOne({_id: userId});
+        if (response.deletedCount > 0) {
+            res.status(204).send();
+        } else {
+            res.status(500).json(response.error || 'Some error occured while deleting the author')
         }
-
-        res.status(200).json({
-            message: "Book deleted successfully"
-        });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json(error.message || 'Some error occurred while deleting the author');
     }
 };
 
