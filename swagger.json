@@ -5,7 +5,7 @@
     "description": "User Api",
     "version": "1.0.0"
   },
-  "host": "localhost:3002",
+  "host": "https://cse341final-x05r.onrender.com/",
   "basePath": "/",
   "schemes": [
     "https",
