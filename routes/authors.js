@@ -14,8 +14,8 @@ router.post("/", authorsController.createAuthor);
        in: 'body',
        required: true,
        schema: {
-           $name: 'J.R.R. Tolkien',
-           $biography: 'Author of The Hobbit',
+           $name: 'George Orwell',
+           $biography: 'English novelist and essayist',
            $nationality: 'British'
        }
    }
@@ -23,6 +23,7 @@ router.post("/", authorsController.createAuthor);
 
 router.put("/:id", authorsController.updateAuthor);
 /* #swagger.tags = ['Authors']
+   #swagger.description = 'Update an existing author'
    #swagger.parameters.id = {
        in: 'path',
        required: true,
@@ -32,8 +33,8 @@ router.put("/:id", authorsController.updateAuthor);
        in: 'body',
        required: true,
        schema: {
-           $name: 'John Ronald Reuel Tolkien',
-           $biography: 'English writer',
+           $name: 'Eric Arthur Blair',
+           $biography: 'English novelist, essayist, journalist and critic',
            $nationality: 'British'
        }
    }
