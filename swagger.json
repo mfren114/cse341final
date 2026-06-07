@@ -5,11 +5,10 @@
     "description": "User Api",
     "version": "1.0.0"
   },
-  "host": "https://cse341final-x05r.onrender.com/",
+  "host": "cse341final-x05r.onrender.com",
   "basePath": "/",
   "schemes": [
-    "https",
-    "http"
+    "https"
   ],
   "paths": {
     "/": {
@@ -21,16 +20,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          }
-        }
-      }
-    },
-    "/api-docs": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }
