@@ -16,13 +16,15 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/', require('./routes'));
+app.use('/', require('./routes/index'));
 
 mongodb.initDb((err) => {
     if(err) {
         console.log(err);
-    }
-    else {app.listen(port, () => {console.log(`Running on port ${port}`)});
+    } else {
+        app.listen(port, () => {
+            console.log(`Running on port ${port}`);
+        });
 
     }
 });
