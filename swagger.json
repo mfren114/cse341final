@@ -24,29 +24,18 @@
         }
       }
     },
+
     "/authors/": {
       "get": {
-        "tags": [
-          "authors"
-        ],
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["authors"],
+        "produces": ["application/json"],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "post": {
-        "tags": [
-          "authors"
-        ],
-        "description": "",
+        "tags": ["authors"],
         "parameters": [
           {
             "name": "body",
@@ -54,147 +43,79 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "biography": {
-                  "example": "any"
-                },
-                "nationality": {
-                  "example": "any"
-                }
+                "name": { "example": "any" },
+                "biography": { "example": "any" },
+                "nationality": { "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
+
     "/authors/{id}": {
       "get": {
-        "tags": [
-          "authors"
-        ],
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["authors"],
+        "produces": ["application/json"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "put": {
-        "tags": [
-          "authors"
-        ],
-        "description": "",
+        "tags": ["authors"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
+          { "name": "id", "in": "path", "required": true, "type": "string" },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "biography": {
-                  "example": "any"
-                },
-                "nationality": {
-                  "example": "any"
-                }
+                "name": { "example": "any" },
+                "biography": { "example": "any" },
+                "nationality": { "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "204": { "description": "No Content" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "delete": {
-        "tags": [
-          "authors"
-        ],
-        "description": "",
+        "tags": ["authors"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "204": { "description": "No Content" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
+
     "/books/": {
       "get": {
-        "tags": [
-          "books"
-        ],
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["books"],
+        "produces": ["application/json"],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "post": {
-        "tags": [
-          "books"
-        ],
-        "description": "",
+        "tags": ["books"],
         "parameters": [
           {
             "name": "body",
@@ -202,127 +123,234 @@
             "schema": {
               "type": "object",
               "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "isbn": {
-                  "example": "any"
-                },
-                "publicationYear": {
-                  "example": "any"
-                },
-                "authorId": {
-                  "example": "any"
-                }
+                "title": { "example": "any" },
+                "isbn": { "example": "any" },
+                "publicationYear": { "example": "any" },
+                "authorId": { "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
+
     "/books/{id}": {
       "get": {
-        "tags": [
-          "books"
-        ],
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["books"],
+        "produces": ["application/json"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "put": {
-        "tags": [
-          "books"
-        ],
-        "description": "",
+        "tags": ["books"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
+          { "name": "id", "in": "path", "required": true, "type": "string" },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "isbn": {
-                  "example": "any"
-                },
-                "publicationYear": {
-                  "example": "any"
-                },
-                "authorId": {
-                  "example": "any"
-                }
+                "title": { "example": "any" },
+                "isbn": { "example": "any" },
+                "publicationYear": { "example": "any" },
+                "authorId": { "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "204": { "description": "No Content" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "delete": {
-        "tags": [
-          "books"
+        "tags": ["books"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
-        "description": "",
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+
+    "/users/": {
+      "get": {
+        "tags": ["users"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "post": {
+        "tags": ["users"],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": { "example": "John" },
+                "lastName": { "example": "Doe" },
+                "email": { "example": "john@example.com" },
+                "age": { "example": 25 },
+                "role": { "example": "member" },
+                "isActive": { "example": true },
+                "createdAt": { "example": "2024-01-01" }
+              }
+            }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+
+    "/users/{id}": {
+      "get": {
+        "tags": ["users"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "put": {
+        "tags": ["users"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": { "example": "John" },
+                "lastName": { "example": "Doe" },
+                "email": { "example": "john@example.com" },
+                "age": { "example": 25 },
+                "role": { "example": "member" },
+                "isActive": { "example": true },
+                "createdAt": { "example": "2024-01-01" }
+              }
+            }
           }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "delete": {
+        "tags": ["users"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+
+    "/libraries/": {
+      "get": {
+        "tags": ["libraries"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "post": {
+        "tags": ["libraries"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": { "example": "Central Library" },
+                "location": { "example": "Downtown" },
+                "booksAvailable": { "example": 1200 },
+                "isOpen": { "example": true }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+
+    "/libraries/{id}": {
+      "get": {
+        "tags": ["libraries"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "put": {
+        "tags": ["libraries"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": { "example": "Central Library" },
+                "location": { "example": "Downtown" },
+                "booksAvailable": { "example": 1200 },
+                "isOpen": { "example": true }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "delete": {
+        "tags": ["libraries"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     }

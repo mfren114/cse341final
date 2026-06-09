@@ -1,0 +1,53 @@
+const express = require("express");
+const router = express.Router();
+
+const usersController = require("../controllers/users");
+
+router.get("/", usersController.getAllUsers);
+
+router.get("/:id", usersController.getUserById);
+
+router.post("/", usersController.createUser);
+/* #swagger.tags = ['Users']
+   #swagger.description = 'Create a new user'
+   #swagger.parameters.body = {
+       in: 'body',
+       required: true,
+       schema: {
+           $firstName: 'John',
+           $lastName: 'Doe',
+           $email: 'john@example.com',
+           $age: 25,
+           $role: 'member',
+           $isActive: true,
+           $createdAt: '2024-01-01'
+       }
+   }
+*/
+
+router.put("/:id", usersController.updateUser);
+/* #swagger.tags = ['Users']
+   #swagger.description = 'Update an existing user'
+   #swagger.parameters.id = {
+       in: 'path',
+       required: true,
+       type: 'string'
+   }
+   #swagger.parameters.body = {
+       in: 'body',
+       required: true,
+       schema: {
+           $firstName: 'Updated',
+           $lastName: 'User',
+           $email: 'updated@example.com',
+           $age: 30,
+           $role: 'admin',
+           $isActive: true,
+           $createdAt: '2024-01-01'
+       }
+   }
+*/
+
+router.delete("/:id", usersController.deleteUser);
+
+module.exports = router;
