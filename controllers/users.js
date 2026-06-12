@@ -1,63 +1,123 @@
 const mongodb = require('../data/database');
 const ObjectId = require('mongodb').ObjectId;
 
-
 // GET ALL
 const getAllUsers = async (req, res) => {
     //#swagger.tags=['users']
-    try {
-        const result = await mongodb.getDatabase().db().collection('users').find().toArray();
 
-        res.setHeader('Content-Type', 'application/json');
+    try {
+        const result = await mongodb
+            .getDatabase()
+            .db()
+            .collection('users')
+            .find()
+            .toArray();
+
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({
+            message: err.message
+        });
     }
 };
 
 // GET SINGLE
 const getUserById = async (req, res) => {
     //#swagger.tags=['users']
+
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+            message: 'Invalid user ID'
+        });
+    }
+
     try {
         const userId = new ObjectId(req.params.id);
-        const result = await mongodb.getDatabase().db().collection('users').find({ _id: userId }).toArray();
 
-        res.setHeader('Content-Type', 'application/json');
+        const result = await mongodb
+            .getDatabase()
+            .db()
+            .collection('users')
+            .findOne({ _id: userId });
 
-        if (!result || result.length === 0) {
+        if (!result) {
             return res.status(404).json({
-                message: "User not found"
+                message: 'User not found'
             });
         }
 
-        res.status(200).json(result[0]);
+        res.status(200).json(result);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({
+            message: err.message
+        });
     }
 };
 
 // POST
 const createUser = async (req, res) => {
     //#swagger.tags=['users']
-    const users = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        age: req.body.age,
-        role: req.body.role,
-        isActive: req.body.isActive,
-        createdAt: req.body.createdAt
+
+    const {
+        firstName,
+        lastName,
+        email,
+        age,
+        role,
+        isActive,
+        createdAt
+    } = req.body;
+
+    // Validation
+    if (!firstName || !lastName || !email || !role) {
+        return res.status(400).json({
+            message: 'First name, last name, email, and role are required'
+        });
+    }
+
+    const emailRegex = /^\S+@\S+\.\S+$/;
+
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({
+            message: 'Invalid email format'
+        });
+    }
+
+    if (typeof age !== 'number' || age < 1 || age > 120) {
+        return res.status(400).json({
+            message: 'Age must be a number between 1 and 120'
+        });
+    }
+
+    const user = {
+        firstName,
+        lastName,
+        email,
+        age,
+        role,
+        isActive: isActive ?? true,
+        createdAt: createdAt || new Date().toISOString()
     };
 
     try {
-        const response = await mongodb.getDatabase().db().collection('users').insertOne(users);
+        const response = await mongodb
+            .getDatabase()
+            .db()
+            .collection('users')
+            .insertOne(user);
+
         if (response.acknowledged) {
-            res.status(204).send();
-        } else {
-            res.status(500).json(response.error || 'Some error occurred while creating the user');
+            return res.status(201).json({
+                message: 'User created successfully',
+                id: response.insertedId
+            });
         }
+
+        res.status(500).json({
+            message: 'Error creating user'
+        });
     } catch (err) {
-        res.status(400).json({
+        res.status(500).json({
             message: err.message
         });
     }
@@ -66,45 +126,106 @@ const createUser = async (req, res) => {
 // PUT
 const updateUser = async (req, res) => {
     //#swagger.tags=['users']
+
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+            message: 'Invalid user ID'
+        });
+    }
+
+    const {
+        firstName,
+        lastName,
+        email,
+        age,
+        role,
+        isActive,
+        createdAt
+    } = req.body;
+
+    if (!firstName || !lastName || !email || !role) {
+        return res.status(400).json({
+            message: 'First name, last name, email, and role are required'
+        });
+    }
+
+    const emailRegex = /^\S+@\S+\.\S+$/;
+
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({
+            message: 'Invalid email format'
+        });
+    }
+
+    if (typeof age !== 'number' || age < 1 || age > 120) {
+        return res.status(400).json({
+            message: 'Age must be a number between 1 and 120'
+        });
+    }
+
     const userId = new ObjectId(req.params.id);
-    const users = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        age: req.body.age,
-        role: req.body.role,
-        isActive: req.body.isActive,
-        createdAt: req.body.createdAt
+
+    const user = {
+        firstName,
+        lastName,
+        email,
+        age,
+        role,
+        isActive,
+        createdAt
     };
 
     try {
-        const response = await mongodb.getDatabase().db().collection('users').replaceOne({ _id: userId }, users);
-        if (response.modifiedCount > 0) {
-            res.status(204).send();
-        } else {
-            res.status(500).json(response.error || 'Some error occurred while updating the user');
+        const response = await mongodb
+            .getDatabase()
+            .db()
+            .collection('users')
+            .replaceOne({ _id: userId }, user);
+
+        if (response.matchedCount === 0) {
+            return res.status(404).json({
+                message: 'User not found'
+            });
         }
-    } catch (error) {
-        console.error('Database Error:', error);
-        res.status(500).json(error.message || 'Some error occurred while updating the user');
+
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
     }
 };
 
 // DELETE
 const deleteUser = async (req, res) => {
     //#swagger.tags=['users']
+
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+            message: 'Invalid user ID'
+        });
+    }
+
     try {
         const userId = new ObjectId(req.params.id);
-        const response = await mongodb.getDatabase().db().collection('users').deleteOne({ _id: userId });
 
-        if (response.deletedCount > 0) {
-            res.status(204).send();
-        } else {
-            res.status(500).json(response.error || 'Some error occurred while deleting the user');
+        const response = await mongodb
+            .getDatabase()
+            .db()
+            .collection('users')
+            .deleteOne({ _id: userId });
+
+        if (response.deletedCount === 0) {
+            return res.status(404).json({
+                message: 'User not found'
+            });
         }
-    } catch (error) {
-        console.error('Database Error:', error);
-        res.status(500).json(error.message || 'Some error occurred while deleting the user');
+
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
     }
 };
 
@@ -115,3 +236,4 @@ module.exports = {
     updateUser,
     deleteUser
 };
+```

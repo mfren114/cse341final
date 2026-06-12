@@ -1,60 +1,108 @@
 const mongodb = require('../data/database');
 const ObjectId = require('mongodb').ObjectId;
 
-
 // GET ALL
 const getAllLibraries = async (req, res) => {
     //#swagger.tags=['libraries']
-    try {
-        const result = await mongodb.getDatabase().db().collection('libraries').find().toArray();
 
-        res.setHeader('Content-Type', 'application/json');
+    try {
+        const result = await mongodb
+            .getDatabase()
+            .db()
+            .collection('libraries')
+            .find()
+            .toArray();
+
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({
+            message: err.message
+        });
     }
 };
 
 // GET SINGLE
 const getLibraryById = async (req, res) => {
     //#swagger.tags=['libraries']
+
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+            message: 'Invalid library ID'
+        });
+    }
+
     try {
         const libraryId = new ObjectId(req.params.id);
-        const result = await mongodb.getDatabase().db().collection('libraries').find({ _id: libraryId }).toArray();
 
-        res.setHeader('Content-Type', 'application/json');
+        const result = await mongodb
+            .getDatabase()
+            .db()
+            .collection('libraries')
+            .findOne({ _id: libraryId });
 
-        if (!result || result.length === 0) {
+        if (!result) {
             return res.status(404).json({
-                message: "Library not found"
+                message: 'Library not found'
             });
         }
 
-        res.status(200).json(result[0]);
+        res.status(200).json(result);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({
+            message: err.message
+        });
     }
 };
 
 // POST
 const createLibrary = async (req, res) => {
     //#swagger.tags=['libraries']
-    const libraries = {
-        name: req.body.name,
-        location: req.body.location,
-        booksAvailable: req.body.booksAvailable,
-        isOpen: req.body.isOpen
+
+    const { name, location, booksAvailable, isOpen } = req.body;
+
+    // Validation
+    if (!name || !location) {
+        return res.status(400).json({
+            message: 'Name and location are required'
+        });
+    }
+
+    if (
+        booksAvailable === undefined ||
+        typeof booksAvailable !== 'number' ||
+        booksAvailable < 0
+    ) {
+        return res.status(400).json({
+            message: 'booksAvailable must be a number greater than or equal to 0'
+        });
+    }
+
+    const library = {
+        name,
+        location,
+        booksAvailable,
+        isOpen: isOpen ?? true
     };
 
     try {
-        const response = await mongodb.getDatabase().db().collection('libraries').insertOne(libraries);
+        const response = await mongodb
+            .getDatabase()
+            .db()
+            .collection('libraries')
+            .insertOne(library);
+
         if (response.acknowledged) {
-            res.status(204).send();
-        } else {
-            res.status(500).json(response.error || 'Some error occurred while creating the library');
+            return res.status(201).json({
+                message: 'Library created successfully',
+                id: response.insertedId
+            });
         }
+
+        res.status(500).json({
+            message: 'Error creating library'
+        });
     } catch (err) {
-        res.status(400).json({
+        res.status(500).json({
             message: err.message
         });
     }
@@ -63,42 +111,91 @@ const createLibrary = async (req, res) => {
 // PUT
 const updateLibrary = async (req, res) => {
     //#swagger.tags=['libraries']
+
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+            message: 'Invalid library ID'
+        });
+    }
+
+    const { name, location, booksAvailable, isOpen } = req.body;
+
+    if (!name || !location) {
+        return res.status(400).json({
+            message: 'Name and location are required'
+        });
+    }
+
+    if (
+        booksAvailable === undefined ||
+        typeof booksAvailable !== 'number' ||
+        booksAvailable < 0
+    ) {
+        return res.status(400).json({
+            message: 'booksAvailable must be a number greater than or equal to 0'
+        });
+    }
+
     const libraryId = new ObjectId(req.params.id);
-    const libraries = {
-        name: req.body.name,
-        location: req.body.location,
-        booksAvailable: req.body.booksAvailable,
-        isOpen: req.body.isOpen
+
+    const library = {
+        name,
+        location,
+        booksAvailable,
+        isOpen
     };
 
     try {
-        const response = await mongodb.getDatabase().db().collection('libraries').replaceOne({ _id: libraryId }, libraries);
-        if (response.modifiedCount > 0) {
-            res.status(204).send();
-        } else {
-            res.status(500).json(response.error || 'Some error occurred while updating the library');
+        const response = await mongodb
+            .getDatabase()
+            .db()
+            .collection('libraries')
+            .replaceOne({ _id: libraryId }, library);
+
+        if (response.matchedCount === 0) {
+            return res.status(404).json({
+                message: 'Library not found'
+            });
         }
-    } catch (error) {
-        console.error('Database Error:', error);
-        res.status(500).json(error.message || 'Some error occurred while updating the library');
+
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
     }
 };
 
 // DELETE
 const deleteLibrary = async (req, res) => {
     //#swagger.tags=['libraries']
+
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+            message: 'Invalid library ID'
+        });
+    }
+
     try {
         const libraryId = new ObjectId(req.params.id);
-        const response = await mongodb.getDatabase().db().collection('libraries').deleteOne({ _id: libraryId });
 
-        if (response.deletedCount > 0) {
-            res.status(204).send();
-        } else {
-            res.status(500).json(response.error || 'Some error occurred while deleting the library');
+        const response = await mongodb
+            .getDatabase()
+            .db()
+            .collection('libraries')
+            .deleteOne({ _id: libraryId });
+
+        if (response.deletedCount === 0) {
+            return res.status(404).json({
+                message: 'Library not found'
+            });
         }
-    } catch (error) {
-        console.error('Database Error:', error);
-        res.status(500).json(error.message || 'Some error occurred while deleting the library');
+
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
     }
 };
 
@@ -109,3 +206,4 @@ module.exports = {
     updateLibrary,
     deleteLibrary
 };
+```
